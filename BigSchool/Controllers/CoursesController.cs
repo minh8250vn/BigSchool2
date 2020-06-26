@@ -69,7 +69,7 @@ namespace BigSchool.Controllers
         {
             var userId = User.Identity.GetUserId();
             var courses = _dbContext.Courses
-                .Where(c => c.LecturerId == userId && c.DateTime > DateTime.Now)
+                .Where(c => c.LecturerId == userId && c.DateTime > DateTime.Now && c.IsCanceled==false)
                 .Include(l => l.Lecturer)
                 .Include(c => c.Category)
                 .ToList();
@@ -81,7 +81,7 @@ namespace BigSchool.Controllers
             var userId = User.Identity.GetUserId();
 
             var courses = _dbContext.Attendances
-                .Where(a => a.AttendeeId == userId)
+                .Where(a => a.AttendeeId == userId )
                 .Select(a => a.Course)
                 .Include(l => l.Lecturer)
                 .Include(l => l.Category)
@@ -98,7 +98,7 @@ namespace BigSchool.Controllers
         {
             var userId = User.Identity.GetUserId();
 
-            var course = _dbContext.Courses.Single(c => c.Id == id && c.LecturerId == userId);
+            var course = _dbContext.Courses.Single(c => c.Id == id && c.LecturerId == userId && c.IsCanceled == false);
             var viewModel = new CourseViewModel
             {
                 Categories = _dbContext.Categories.ToList(),
@@ -123,7 +123,7 @@ namespace BigSchool.Controllers
                 return View("Create", viewModel);
             }
             var userId = User.Identity.GetUserId();
-            var course = _dbContext.Courses.Single(c => c.Id == viewModel.Id && c.LecturerId == userId);
+            var course = _dbContext.Courses.Single(c => c.Id == viewModel.Id && c.LecturerId == userId && c.IsCanceled == false);
 
             course.Place = viewModel.Place;
             course.DateTime = viewModel.GetDateTime();
